@@ -20,8 +20,8 @@ class TwitterClient():
           players.append(s)
     return players
 
-  def reply_to_player(self):
-    print "reply to player"
+  def reply_score(self,player_name,tweet_id,game_score):
+    self.api.PostUpdate("@"+player_name+" Score: "+str(game_score)+" Please try again at Level1, Level2, or Level3!", tweet_id)
 
   def tweet_scores(self):
     print "tweet scores"
