@@ -38,7 +38,7 @@ if __name__ == '__main__':
   while running:
     start = time.clock()
     game_requests = get_game_requests(twttr,game_id_offset)
-    
+
     if game_requests:
       game_ids = sorted(game_requests.keys(), reverse=True)
       # Save most recent tweet as offset for next poll
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         with open("game_id_offset","w") as save_offset_file:
             save_offset_file.write(str(game_id_offset))
         save_offset_file.close()
-      
+
       save_game_requests(game_requests)
 
     poll_duration = time.clock() - start
