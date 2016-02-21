@@ -2,6 +2,13 @@
 # Porting from arduino to python
 import mraa
 from time import sleep
+import pyupm_i2clcd as lcd
+
+myLcd = lcd.Jhd1313m1(0, 0x3E, 0x62)
+
+myLcd.clear()
+myLcd.setColor(0, 0, 255)
+myLcd.setCursor(0,0)
 
 e = mraa.Gpio(5)
 s = mraa.Gpio(3)
@@ -64,6 +71,7 @@ def initStepper():
 def calibrateStepper():
   global calibrated
   global stepsMax
+  global curSteps
   if calibrated == True:
     return
 
@@ -162,6 +170,7 @@ if __name__ == '__main__':
 
     # Calibrate, then move to home
     calibrateStepper()
+    print "Calibration Finished"
 
     #if gameOver == false:
     #  for i in range(0,random(stepsMax / 2, stepsMax)):
@@ -170,22 +179,33 @@ if __name__ == '__main__':
     #    stepMotor(random(200, 300), Direction.DOWN, Microsteps.FULL)
     #  for i in range(0, random(stepsMax / 8, stepsMax / 4)):
     #    stepMotor(random(300, 400), Direction.UP, Microsteps.FULL)
-
+   
+    print "MOVE UP"
+    myLcd.write("MOVE UP")
+    d.write(1)
+    e.write(0)
     for x in range(0, 1000):
-      print x
       s.write(1)
       sleep(0.001)
       s.write(0)
       sleep(0.002)
+
     d.write(0)
-    for x in range(0, 1000):
+
+    print "MOVE DOWN"
+    myLcd.setCursor(0,0)
+    myLcd.write("MOVE DOWN")
+
+    for x in range(0, 500):
       s.write(0)
       sleep(0.001)
       s.write(1)
-      sleep(0.005)
+      sleep(0.002)
+
     e.write(1)
 
-    gameOver = True
+    #gameOver = True
+    running = False
     print "Final position: "+str(curSteps)
     # NOTE: May require floating point ? Should test it
     score = (curSteps / stepsMax) * 100.0
