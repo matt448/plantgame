@@ -6,6 +6,7 @@ import os.path
 import shutil
 import time
 from TwitterClient import TwitterClient
+import subprocess
 
 if __name__ == '__main__':
   polling_interval = 30
@@ -18,12 +19,14 @@ if __name__ == '__main__':
 
     for game_id in sorted(games):
       # Execute gameplay for gameid
-
-      # Produce Score
-      game_score = 1250
-
-      with open("newgames/"+str(game_id),"r+") as game_file:
+      with open("newgames/"+str(game_id),"r") as game_file:
         player_name = game_file.readline()
+      game_file.close()
+      
+      # Execute game command and retrieve score
+      game_score = os.popen('python ../Mario_Plant_Game/Mario_Plant_Game.py '+player_name).read()
+       
+      with open("newgames/"+str(game_id),"a") as game_file:
         game_file.write(","+str(game_score)+"\n")
       game_file.close()
 

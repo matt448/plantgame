@@ -3,6 +3,9 @@
 import mraa
 from time import sleep
 import pyupm_i2clcd as lcd
+import sys
+
+user = str(sys.argv[1])
 
 myLcd = lcd.Jhd1313m1(0, 0x3E, 0x62)
 
@@ -11,7 +14,7 @@ myLcd.setColor(0, 0, 255)
 myLcd.setCursor(0,0)
 
 e = mraa.Gpio(5)
-s = mraa.Gpio(3)
+s = mraa.Gpio(8)
 d = mraa.Gpio(2)
 m1 = mraa.Gpio(6)
 m2 = mraa.Gpio(4)
@@ -39,6 +42,7 @@ m2.write(0)
 
 def setup():
 
+  myLcd.write("STARTING GAME")
   # Reset stepper motor
   initStepper()
 
@@ -85,13 +89,13 @@ def calibrateStepper():
     if curSteps > stepsMax:
       stepsMax = curSteps
 
-  print "Total steps: "+str(stepsMax)
+  #print "Total steps: "+str(stepsMax)
   calibrated = True
   # Reset to bottom position
   while b.read() == 0:
     stepMotor(0.001, 0, 3)
 
-  print "Game Ready!"
+  #print "Game Ready!"
   # NOTE: figure this out - should be microseconds?
   sleep(1.5)
 
@@ -169,8 +173,10 @@ if __name__ == '__main__':
         
 
     # Calibrate, then move to home
+    myLcd.clear()
+    myLcd.setCursor(0,0)
+    myLcd.write("CALIBRATE")
     calibrateStepper()
-    print "Calibration Finished"
 
     #if gameOver == false:
     #  for i in range(0,random(stepsMax / 2, stepsMax)):
@@ -179,9 +185,13 @@ if __name__ == '__main__':
     #    stepMotor(random(200, 300), Direction.DOWN, Microsteps.FULL)
     #  for i in range(0, random(stepsMax / 8, stepsMax / 4)):
     #    stepMotor(random(300, 400), Direction.UP, Microsteps.FULL)
+
+    myLcd.clear()
+    myLcd.setCursor(1,0)
+    myLcd.write('@' + user)
    
-    print "MOVE UP"
-    myLcd.write("MOVE UP")
+    myLcd.setCursor(0,0)
+    myLcd.write("MOVE UP        ")
     d.write(1)
     e.write(0)
     for x in range(0, 1000):
@@ -192,9 +202,8 @@ if __name__ == '__main__':
 
     d.write(0)
 
-    print "MOVE DOWN"
     myLcd.setCursor(0,0)
-    myLcd.write("MOVE DOWN")
+    myLcd.write("MOVE DOWN       ")
 
     for x in range(0, 500):
       s.write(0)
@@ -206,9 +215,9 @@ if __name__ == '__main__':
 
     #gameOver = True
     running = False
-    print "Final position: "+str(curSteps)
+    #print "Final position: "+str(curSteps)
     # NOTE: May require floating point ? Should test it
     score = (curSteps / stepsMax) * 100.0
-    print "You made it "+str(score)+"% to target"
-    print "Game Over!"
-
+    #print "You made it "+str(score)+"% to target"
+    #print "Game Over!"
+    print "89"
